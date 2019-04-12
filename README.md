@@ -4,8 +4,9 @@ A funny useful tool to know what to expect for
 
 ## Getting Started
 
-You need to have `bundler` and `ruby` installed
-Run the commands below to check if everything goes well
+You need to have `bundler` and `ruby` installed.
+Also you need to install `Selenium ChromeDriver`. https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
+ Run the commands below to check if everything goes well
 
 ```
 ruby -v
