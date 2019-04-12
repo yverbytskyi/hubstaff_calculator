@@ -3,7 +3,7 @@ require 'watir' # Crawler
 require 'colorize'
 require 'pry' # Ruby REPL
 require 'rb-readline' # Ruby IRB
-require 'awesome_print' # Console output
+# require 'awesome_print' # Console output
 
 class Array
   def to_table
