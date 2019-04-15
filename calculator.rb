@@ -79,7 +79,7 @@ puts "#{'You have earned'.red} #{formatted_duration(hours_earned)} hours during 
 puts "#{'Current avarage'.red}: #{formatted_duration(current_avarage)}"
 puts '-'.light_blue * 80
 puts "#{'And hours_planned'.blue} = #{hours_planned}"
-puts "#{'You have to earn more'.green} #{hours_planned - hours_earned} hours!"
+puts "#{'You have to earn more'.green} #{formatted_duration(hours_planned - hours_earned)} hours!"
 puts "#{'Days left'.red}: #{days_left} with avarage #{formatted_duration(future_avarage)} "#{@movie.duration/60}h #{@movie.duration % 60}min"
 
 puts '@'.light_blue * 80
