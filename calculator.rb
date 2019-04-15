@@ -76,11 +76,11 @@ current_avarage = hours_earned / worked_days.to_f
 future_avarage = hours_to_earn / days_left.to_f
 
 puts "#{'You have earned'.red} #{formatted_duration(hours_earned)} hours during #{worked_days} days(including today)"
-puts "#{'Current avarage'.red}: #{formatted_duration(hours_earned/worked_days.to_f)}"
+puts "#{'Current avarage'.red}: #{formatted_duration(current_avarage)}"
 puts '-'.light_blue * 80
 puts "#{'And hours_planned'.blue} = #{hours_planned}"
 puts "#{'You have to earn more'.green} #{hours_planned - hours_earned} hours!"
-puts "#{'Days left'.red}: #{days_left} with avarage #{formatted_duration(hours_to_earn/days_left.to_f)} "#{@movie.duration/60}h #{@movie.duration % 60}min"
+puts "#{'Days left'.red}: #{days_left} with avarage #{formatted_duration(future_avarage)} "#{@movie.duration/60}h #{@movie.duration % 60}min"
 
 puts '@'.light_blue * 80
 puts 'DUMAJ!'.red
