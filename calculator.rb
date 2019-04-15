@@ -20,6 +20,12 @@ class Array
   end
 end
 
+def formatted_duration(hours_with_minutes)
+  hours = hours_with_minutes.to_i
+  minutes = (hours_with_minutes - hours_with_minutes.to_i) * 60
+  "#{ hours }h #{ minutes.ceil }min"
+end
+
 CONFIG = YAML::load_file('config.yml').with_indifferent_access
 
 started_this_month = Date.today.mday >= CONFIG[:start_day]
@@ -66,12 +72,16 @@ hours_earned_arr = browser.div(class: 'report-rollup-value').text.split(':').map
 hours_earned = hours_earned_arr[0] + hours_earned_arr[1] / 60 + hours_earned_arr[2] / 3600
 hours_planned = CONFIG[:hours_a_day] * work_days
 hours_to_earn = hours_planned - hours_earned
-puts "#{'You have earned'.red} #{hours_earned} hours during #{worked_days} days(including today)"
-puts "#{'Current avarage'.red}: #{hours_earned / worked_days.to_f}"
+current_avarage = hours_earned / worked_days.to_f
+future_avarage = hours_to_earn / days_left.to_f
+
+puts "#{'You have earned'.red} #{formatted_duration(hours_earned)} hours during #{worked_days} days(including today)"
+puts "#{'Current avarage'.red}: #{formatted_duration(hours_earned/worked_days.to_f)}"
 puts '-'.light_blue * 80
 puts "#{'And hours_planned'.blue} = #{hours_planned}"
 puts "#{'You have to earn more'.green} #{hours_planned - hours_earned} hours!"
-puts "#{'Days left'.red}: #{days_left} with avarage #{hours_to_earn / days_left.to_f}"
+puts "#{'Days left'.red}: #{days_left} with avarage #{formatted_duration(hours_to_earn/days_left.to_f)} "#{@movie.duration/60}h #{@movie.duration % 60}min"
+
 puts '@'.light_blue * 80
 puts 'DUMAJ!'.red
 puts '@'.light_blue * 80
