@@ -3,6 +3,8 @@ require 'watir' # Crawler
 require 'colorize'
 require 'pry' # Ruby REPL
 require 'rb-readline' # Ruby IRB
+# require "selenium-webdriver"
+
 # require 'awesome_print' # Console output
 
 class Array
@@ -21,9 +23,19 @@ class Array
 end
 
 def formatted_duration(hours_with_minutes)
+  return '***' if hours_with_minutes == Float::INFINITY
   hours = hours_with_minutes.to_i
   minutes = (hours_with_minutes - hours_with_minutes.to_i) * 60
-  "#{ hours }h #{ minutes.ceil }min"
+  "#{hours}h #{minutes.ceil}min"
+end
+
+def is_holiday?(date)
+  date.saturday? || date.sunday? ||
+  CONFIG[:holidays].map { |h| Date.strptime(h, '%d.%m') }.include?(date)
+end
+
+def is_dayoff?(date)
+  CONFIG[:holidays].map { |h| Date.strptime(h, '%d.%m') }.include?(date)
 end
 
 CONFIG = YAML::load_file('config.yml').with_indifferent_access
@@ -41,7 +53,7 @@ empty_calendar = (start_date.cweek..end_date.cweek).each_with_object({}) do |w, 
 end
 
 calend = (start_date..end_date).to_a.each_with_object(empty_calendar) do |d, calendar|
-  daycolor = d.saturday? || d.sunday? ? :red : :blue
+  daycolor = is_holiday?(d) ? :red : :blue
   daycolor = :yellow if d == Date.today
   wd = (d.wday + 6) % 7
   calendar[d.cweek][wd] = d.day.to_s.send(daycolor)
@@ -49,8 +61,8 @@ end
 
 puts calend.values.to_table
 
-work_days = (start_date..end_date).to_a.reject { |k| k.instance_eval { saturday? || sunday? } }.count
-worked_days = (start_date..Date.today).to_a.reject { |k| k.instance_eval { saturday? || sunday? } }.count
+work_days = (start_date..end_date).to_a.reject { |k| is_holiday?(k) }.count
+worked_days = (start_date..Date.today).to_a.reject { |k| is_holiday?(k) }.count
 days_left = work_days - worked_days
 stat_url = "app.hubstaff.com/reports/#{CONFIG[:company_id]}/my/time_and_activities?date=#{start_date.strftime('%F')}&date_end=#{end_date.strftime('%F')}"
 
@@ -78,8 +90,8 @@ future_avarage = hours_to_earn / days_left.to_f
 puts "#{'You have earned'.red} #{formatted_duration(hours_earned)} hours during #{worked_days} days(including today)"
 puts "#{'Current avarage'.red}: #{formatted_duration(current_avarage)}"
 puts '-'.light_blue * 80
-puts "#{'And hours_planned'.blue} = #{hours_planned}"
-puts "#{'You have to earn more'.green} #{formatted_duration(hours_planned - hours_earned)} hours!"
+puts "#{'Hours_planned'.blue} = #{hours_planned}"
+puts "#{'You have to earn more'.green} #{formatted_duration(hours_planned - hours_earned)}!"
 puts "#{'Days left'.red}: #{days_left} with avarage #{formatted_duration(future_avarage)} "#{@movie.duration/60}h #{@movie.duration % 60}min"
 
 puts '@'.light_blue * 80
