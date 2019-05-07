@@ -3,7 +3,6 @@ require 'watir' # Crawler
 require 'colorize'
 require 'pry' # Ruby REPL
 require 'rb-readline' # Ruby IRB
-# require "selenium-webdriver"
 
 # require 'awesome_print' # Console output
 
@@ -29,13 +28,20 @@ def formatted_duration(hours_with_minutes)
   "#{hours}h #{minutes.ceil}min"
 end
 
-def is_holiday?(date)
-  date.saturday? || date.sunday? ||
-  CONFIG[:holidays].map { |h| Date.strptime(h, '%d.%m') }.include?(date)
+def is_ooo?(date)
+  date.saturday? || date.sunday? || is_holiday?(date) || is_vacation?(date) || is_dayoff?(date)
 end
 
 def is_dayoff?(date)
-  CONFIG[:holidays].map { |h| Date.strptime(h, '%d.%m') }.include?(date)
+  CONFIG[:dayoffs]&.include?(date.strftime('%d.%m.%Y'))
+end
+
+def is_holiday?(date)
+  CONFIG[:holidays]&.include?(date.strftime('%d.%m.%Y'))
+end
+
+def is_vacation?(date)
+  CONFIG[:vacations]&.include?(date.strftime('%d.%m.%Y'))
 end
 
 CONFIG = YAML::load_file('config.yml').with_indifferent_access
@@ -53,7 +59,7 @@ empty_calendar = (start_date.cweek..end_date.cweek).each_with_object({}) do |w, 
 end
 
 calend = (start_date..end_date).to_a.each_with_object(empty_calendar) do |d, calendar|
-  daycolor = is_holiday?(d) ? :red : :blue
+  daycolor = is_ooo?(d) ? :red : :blue
   daycolor = :yellow if d == Date.today
   wd = (d.wday + 6) % 7
   calendar[d.cweek][wd] = d.day.to_s.send(daycolor)
@@ -61,8 +67,8 @@ end
 
 puts calend.values.to_table
 
-work_days = (start_date..end_date).to_a.reject { |k| is_holiday?(k) }.count
-worked_days = (start_date..Date.today).to_a.reject { |k| is_holiday?(k) }.count
+work_days = (start_date..end_date).to_a.reject { |k| is_ooo?(k) }.count
+worked_days = (start_date..Date.today).to_a.reject { |k| is_ooo?(k) }.count
 days_left = work_days - worked_days
 stat_url = "app.hubstaff.com/reports/#{CONFIG[:company_id]}/my/time_and_activities?date=#{start_date.strftime('%F')}&date_end=#{end_date.strftime('%F')}"
 
