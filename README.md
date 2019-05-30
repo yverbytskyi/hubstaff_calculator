@@ -37,7 +37,7 @@ ruby calculator.rb
 ```
 
 ## See the Truth
-![hubstaff_calculator](https://github.com/yverbytskyi/hubstaff_calculator/blob/master/hubstaff_calculator.png)
+![hubstaff_calculator](https://raw.githubusercontent.com/yverbytskyi/hubstaff_calculator/master/hubstaff_calculator.png)
 Work hard and stay enjoyed your work! Cheers)
 
 *In Code We Trust!*
