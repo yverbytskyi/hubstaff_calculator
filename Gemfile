@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem 'activesupport', '~> 5.0'
+gem 'activesupport', '~> 6.1'
 gem 'watir' # Crawler
 gem 'colorize'
 gem 'pry' # Ruby REPL
